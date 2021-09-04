@@ -44,6 +44,8 @@ pub use sp_runtime::{Perbill, Permill};
 pub use pallet_template;
 /// Import the poe pallet.
 pub use pallet_poe;
+/// Import the kitties pallet.
+pub use pallet_kitties;
 
 /// An index to a block.
 pub type BlockNumber = u32;
@@ -282,6 +284,17 @@ impl pallet_poe::Trait for Runtime {
 	type MaxClaimLength = MaxClaimLength;
 }
 
+parameter_types! {
+	pub const KittyReserve: u64 = 1_000;
+}
+impl pallet_kitties::Config for Runtime {
+    type Event = Event;
+    type Randomness = RandomnessCollectiveFlip;
+	type KittyIndex = u32;
+	type Currency = Balances;
+	type KittyReserve = KittyReserve;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime where
@@ -301,6 +314,7 @@ construct_runtime!(
 		TemplateModule: pallet_template::{Pallet, Call, Storage, Event<T>},
 		// Include the custom logic from the pallet-poe in the runtime.
 		PoeModule: pallet_poe::{Pallet, Call, Storage, Event<T>},
+		KittiesModule: pallet_kitties::{Pallet, Call, Storage, Event<T>},
 	}
 );
 
